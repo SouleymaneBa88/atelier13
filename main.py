@@ -1,6 +1,7 @@
 
 #creation liste
 service_orangr=[]
+soldes = 400000
 #===========================================Menu principal=====================================================================
 
 def menu():
@@ -55,7 +56,6 @@ def menu_consulter_solde():
     print("0. precedent")
     print("9. accueil")
 
-
 def consulter():
     while True:
         menu_consulter_solde()
@@ -87,13 +87,14 @@ def consulter():
 
 def affiche_consulter_solde():
     while True:
+        global soldes
         # menu_consulter_solde()
         try:
             code=1234
             code_user= int(input("veuillez saisir votre mot de pass : "))
         
             if code_user == code:
-                print("vous avez 40000")
+                print(f"Votre solde est: {soldes} Fcf")
 
                 choix= int(input("Choix menu du solde : "))
                 if choix==0:
@@ -188,18 +189,23 @@ def achat_credit():
 
 def mon_numero():
     while True:
+        global soldes
         try:
             mon_numero=(input("Veuillez saisir votre numero : "))
             if len(str(mon_numero))== 9:
-                montant= int(input("Veuillez saisir le montant "))
+                montant= int(input("Veuillez saisir le montant : "))
                 if montant > 0:
-                    code= int(input("Veuillez saisir votre code secret"))
+                    code= int(input("Veuillez saisir votre code secret : "))
                     if code == 1234:
-                        print("Credit acheter avec success!")
+                        if soldes >= montant:
+                            soldes = soldes - montant
+                            print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes}")
+                        else:
+                            print("Votre solde est insuffisant!")
                     else:
-                        print("code incorrect veuillez ressayer")
+                        print("Code incorrect veuillez ressayer")
             else:
-                print("incorrect veuillez resaisir")
+                print("Incorrect veuillez resaisir")
                 
             choix= int(input("retoune a consultation: "))
             if choix==0:
@@ -215,17 +221,22 @@ def mon_numero():
 
 def mon_autre_numero():
     while True:
+        global soldes
         try:
             mon_numero= (input("Veuillez saisir votre numero : "))
             if len(str(mon_numero))== 9:
-                montant= (input("Veuillez saisir le montant "))
+                montant= int(input("Veuillez saisir le montant : "))
                 if montant > 0:
-                    print(" montant incorrect")
+                    code= int(input("Veuillez saisir votre code secret : "))
                     if code == 1234:
-                        print("Credit acheter avec success!")
+                        if soldes >= montant:
+                            soldes = soldes - montant
+                            print(f"Credit de {montant} envoyé au {mon_numero}. Solde restant: {soldes}")
+                        else:
+                            print("Votre solde est insuffisant!")
                     else:
-                        print("code incorrect veuillez ressayer")
-                choix= int(input("retoune a consultation: "))
+                        print("Code incorrect veuillez ressayer")
+                choix= int(input("Retoune a consultation: "))
                 if choix == 0:
                     achat_credit()
                     break
@@ -233,33 +244,38 @@ def mon_autre_numero():
                     afficher_orange_money()
                     break
             else:
-                print("incorrect veuillez resaisir")
+                print("Incorrect veuillez resaisir")
         except ValueError:
-            print("numero incorrect resaisi")
+            print("Numero incorrect resaisi")
 
 def mon_numero_promobile():
     while True:
+        global soldes
         try:
             mon_numero= (input("Veuillez saisir votre numero : "))
             if len(str(mon_numero))== 9:
-                montant= int(input("Veuillez saisir le montant "))
+                montant= int(input("Veuillez saisir le montant : "))
                 if montant > 0:
-                    # print(" montant incorrect")
+                    code= int(input("Veuillez saisir votre code secret : "))
                     if code == 1234:
-                        print("Credit acheter avec success!")
+                        if soldes >= montant:
+                            soldes = soldes - montant
+                            print(f"Credit de {montant} acheté pour {mon_numero}. Solde restant: {soldes}")
+                        else:
+                            print("Votre solde est insuffisant!")
                     else:
-                        print("code incorrect veuillez ressayer")
+                        print("Code incorrect veuillez ressayer")
                 else:
-                    print("numero incorrect")
+                    print("Montant invalide")
 
-                choix= int(input("retoune a consultation: "))
+                choix= int(input("Retoune a consultation: "))
                 if choix==0:
                     achat_credit()
                     break
             else:
-                print("incorrect veuillez resaisir")
+                print("Incorrect veuillez resaisir")
         except ValueError:
-            print("numero incorrect resaisi")
+            print("Numero incorrect resaisi")
 
 #===========================================effectuer de transfert=====================================================================
 def menu_transfert():
@@ -305,16 +321,21 @@ def transfert():
 
 def transfert_national():
     while True:
+        global soldes
         try:
-            numero=int(input("Veuillez donner votre numero : "))
+            numero= input("Veuillez donner votre numero : ")
             if len(numero) == 9:
                 montan= int(input("Veuillez le montant a transferer : "))
                 if montan>0:
                     code_secret= int(input("Veuillez saisir votre code secret : "))
                     if code_secret == 1234:
-                        print("Transfert reussi avec sucess!")
+                        if soldes >= montan:
+                            soldes = soldes - montan
+                            print(f"Transfert de {montan} réussi avec succès! Solde restant: {soldes}")
+                        else:
+                            print("Solde insuffisant pour ce transfert!")
                     else:
-                        print("Echec du transfert!")
+                        print("Code secret incorrect!")
                 choix= int(input("Accueil : "))
                 if choix ==0:
                     transfert()
@@ -322,26 +343,30 @@ def transfert_national():
                 elif choix==9:
                     afficher_orange_money()
                     break
-
                 else:
-                    print("choix incorrect!")
+                    print("Choix incorrect!")
             else:
-                print("incorrect veuillez resaisir")
+                print("Incorrect veuillez resaisir")
         except ValueError:
-            print("erreur de connexion veuillez retentez")
+            print("Erreur de connexion veuillez retentez")
 
 def transfert_international():
     while True:
+        global soldes
         try:
-            mon_numero=int(input("Veuillez saisir votre numero : "))
-            if mon_numero >= 9:
+            mon_numero= input("Veuillez saisir votre numero : ")
+            if len(mon_numero) == 9:
                 montan= int(input("Veuillez le montant a transferer : "))
                 if montan>0:
                     code_secret= int(input("Veuillez saisir votre code secret : "))
                     if code_secret == 1234:
-                        print("Transfert reussi avec sucess!")
+                        if soldes >= montan:
+                            soldes = soldes - montan
+                            print(f"Transfert international de {montan} réussi! Solde restant: {soldes}")
+                        else:
+                            print("Solde insuffisant pour ce transfert!")
                     else:
-                        print("Echec du transfert!")
+                        print("Code secret incorrect!")
                 choix= int(input("Accueil : "))
                 if choix ==0:
                     transfert()
@@ -349,13 +374,12 @@ def transfert_international():
                 elif choix==9:
                     afficher_orange_money()
                     break
-
                 else:
-                    print("choix incorrect!")
+                    print("Choix incorrect!")
             else:
-                print("incorrect veuillez resaisir")
+                print("Incorrect veuillez resaisir")
         except ValueError:
-            print("erreur de connexion veuillez retentez")
+            print("Erreur de connexion veuillez retentez")
 
 # def annulation():
 #===========================================Programme principal=====================================================================
@@ -377,6 +401,3 @@ while True:
             # print("avec success")
         else:
             print("incorrect")
-
-        
-        
