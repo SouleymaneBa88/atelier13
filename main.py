@@ -10,7 +10,6 @@ def menu():
     print("\n Pour acceder au service orange money taper  '#144#'")
     # print("#144#")
 #===========================================Fonction principal=====================================================================
-
 #fonction menu principal
 def menu_om():
     print("\n Bienvenu dans le service orange money ")
@@ -216,7 +215,6 @@ def Menu_achat():
         except ValueError:
             print("choix incorrect!")
 
-
 def confirmation():
     while True:
         try:
@@ -228,8 +226,6 @@ def confirmation():
                 break
         except ValueError:
             print("Code incorrect !")
-
-
 
 def Internet():
     print("\n Forfait internet")
@@ -475,15 +471,17 @@ def annulation_transfert():
         print("Aucun transfert à annuler.")
         return
     last_transfer = service_orangr[-1]
-    numero = input("Veuillez saisir le numéro du destinataire : ")
-    try:
-        montant = int(input("Veuillez saisir le montant du transfert : "))
-    except ValueError:
-        print("Montant invalide.")
-        return
-    if numero != last_transfer['numero'] or montant != last_transfer['montant']:
-        print("Erreur de choix.")
-        return
+    while True:
+        numero = input("Veuillez saisir le numéro du destinataire : ")
+        try:
+            montant = int(input("Veuillez saisir le montant du transfert : "))
+        except ValueError:
+            print("Montant invalide. Veuillez ressayer.")
+            continue
+        if numero == last_transfer['numero'] and montant == last_transfer['montant']:
+            break
+        else:
+            print("Erreur de choix. Veuillez ressayer.")
     print("1. Oui")
     print("2. Non")
     while True:
@@ -503,9 +501,6 @@ def annulation_transfert():
         except ValueError:
             print("Choix incorrect.")
         
-
-
-
 #===========================================Programme principal=====================================================================
 
 #principal programme
