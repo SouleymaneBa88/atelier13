@@ -5,7 +5,7 @@ service_orangr=[]
 soldes = {
     'montants': 400000
 }
-fichier = 'data.json'
+fichier = 'compte.json'
 #cette condition verifie si ce fichier n'existe pas
 if not os.path.exists(fichier):
     with open(fichier, 'w', encoding= 'utf-8') as fichier_json:
@@ -15,7 +15,8 @@ if not os.path.exists(fichier):
 #===========================================Menu principal=====================================================================
 
 def menu():
-    print("Contact")
+    print("  ")
+    print("--Yonde sa xaliss si soutoura--")
     print("\n Pour acceder au service orange money taper  '#144#'")
     # print("#144#")
 
@@ -53,7 +54,7 @@ def afficher_orange_money():
                 break
 
             else:
-             print("Probleme de connexion ou code non valide.")
+             print("Choix inconnu !.")
 
             break
         except ValueError:
@@ -63,12 +64,16 @@ def afficher_orange_money():
 
 # menu consulter le solde
 def menu_consulter_solde():
+    print('-' *30)
     print("\n Consulter votre solde")
     print("1. Solde compte om")
     print("2. Mon condamne")
     print("3. Reception international")
+    print('-' *30)
     print("0. precedent")
     print("9. accueil")
+    print('-' *30)
+
 
 def consulter():
     while True:
@@ -102,23 +107,29 @@ def consulter():
 # consulter le solde
 def affiche_consulter_solde():
     while True:
+        code = 1234
         try:
             confirmation()
             with open(fichier,'r') as f:
-                soldes=json.load(f)
-                print(f" Le solde de votre compte om est de {soldes['montants']}")
-
-                choix= int(input("Choix menu du solde : "))
-                if choix==0:
-                    consulter()
+                    soldes=json.load(f)
+                    print('-' *30)
+                    print(f" Le solde de votre compte om est de {soldes['montants']}")
+                    print('-' *30)
+                    choix= int(input("Choix menu du solde : "))
+                    if choix==0:
+                        consulter()
+                        break
+                    elif choix==9:
+                        afficher_orange_money()
+                        break
+                    else:
+                        print("Probleme de connexion ou code non valide.")
+                        break
                     break
-                elif choix==9:
-                    afficher_orange_money()
-                    break
-                else:
-                    print("Probleme de connexion ou code non valide.")
-                    break
-            
+            # else:
+            #     print("Oups ! Code incorret")
+            #     break
+                
         except ValueError:
             print
 
@@ -159,10 +170,12 @@ def international():
              
 #===========================================acheter du credit=====================================================================
 def menu_cacheter_credit():
+    print('-' *30)
     print("\n Achat credit")
     print("1. Mon numero")
     print("2. Avec un autre numero")
     print("3. Avec un numero promobile")
+    print('-' *30)
     print("0. precedent")
     print("9. accueil")
 
@@ -198,12 +211,16 @@ def achat_credit():
             print("Probleme de connexion ou code non valide.")
 
 def Menu_achat():
+    print('-' *30)
     print("\n Mon numero")
     print("1. credit Telephonique")
     print("2. Pass Ilimix")
     print("3. Pass Internet")
+    print('-' *30)
     print("0. Precedent")
     print("9. Accueil")
+    print('-' *30)
+
     while True:
         try:
             choix= int (input(" choisi un option : "))
@@ -238,49 +255,58 @@ def confirmation():
             print("Code incorrect !")
 
 def Internet():
+    print('-' *30)
     print("\n Forfait internet")
     print("1. 100Mo 500fcf")
     print("2. 500Mo 1000fcf")
     print("3. 1Go 2000fcf")
+    print('-' *30)
     print("0. Precedent")
     print("9. Accueil")
     while True:
         try:
             choix = int (input("Choix option : "))
             if choix == 1:
-                prix = 500
-                quantiter = 100
-                capacite = 'Mo'
+                forfait = {
+                    'pass': '100Mo',
+                    'prix':500
+                }
                 confirmation()
                 with open(fichier,'r') as f:
                     soldes=json.load(f)
-                soldes['montants']  -= prix
-                print(f"Bravo! vous avez acheter un forfait interne de {quantiter}{capacite} a {prix}")
+                soldes['montants']  -= forfait["prix"]
+                print('-' *30)
+                print(f"Bravo! vous avez acheter un forfait interne de {forfait['pass']} a {forfait['prix']}")
                 print(f"Votre solde orange money est {soldes['montants']}")
+                print('-' *30)
                 break
             elif choix == 2:
-                prix = 1000
-                quantiter = 500
-                capacite = 'Mo'
+                forfait = {
+                    'pass': '500Mo',
+                    'prix':1000
+                }
                 confirmation()
                 with open(fichier,'r') as f:
                     soldes=json.load(f)
-                soldes['montants'] -= prix
-                print(f"Bravo! vous avez acheter un forfait interne de {quantiter}{capacite} a {prix}")
+                soldes['montants']  -= forfait["prix"]
+                print('-' *30)
+                print(f"Bravo! vous avez acheter un forfait interne de {forfait['pass']} a {forfait['prix']}")
                 print(f"Votre solde orange money est {soldes['montants']}")
-
+                print('-' *30)
                 break
             elif choix == 3:
-                prix = 2000
-                quantiter = 1
-                capacite = 'Go'
+                forfait = {
+                    'pass': '1Go',
+                    'prix':2000
+                }
                 confirmation()
                 with open(fichier,'r') as f:
                     soldes=json.load(f)
-                soldes['montants']  -= prix
-                print(f"Bravo! vous avez acheter un forfait interne de {quantiter}{capacite} a {prix}")
+                soldes['montants']  -= forfait["prix"]
+                print('-' *30)
+                print(f"Bravo! vous avez acheter un forfait interne de {forfait['pass']} a {forfait['prix']}")
                 print(f"Votre solde orange money est {soldes['montants']}")
-
+                print('-' *30)
                 break
             elif choix == 0:
                 break
@@ -316,7 +342,11 @@ def mon_numero():
                     if soldes['montants'] >= montant:
                             soldes['montants'] -= montant
                             sauvegarde_montant(soldes)
+                            print('-' *30)
+
                             print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes['montants']}")
+                            print('-' *30)
+
                     else:
                             print("Votre solde est insuffisant!")
             else:
@@ -347,7 +377,11 @@ def mon_autre_numero():
                     if soldes['montants'] >= montant:
                             soldes['montants'] -= montant
                             sauvegarde_montant(soldes)
+                            print('-' *30)
+
                             print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes['montants']}")
+                            print('-' *30)
+
                     else:
                             print("Votre solde est insuffisant!")
                     # else:
@@ -377,7 +411,11 @@ def mon_numero_promobile():
                     if soldes['montants'] >= montant:
                             soldes['montants'] -= montant
                             sauvegarde_montant(soldes)
+                            print('-' *30)
+
                             print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes['montants']}")
+                            print('-' *30)
+
                     else:
                             print("Votre solde est insuffisant!")
                     # else:
@@ -395,13 +433,18 @@ def mon_numero_promobile():
             print("Numero incorrect resaisi")
 
 #===========================================effectuer de transfert=====================================================================
+
 def menu_transfert():
+    print('-' *30)
     print("\n Transfert d'argent")
     print("1. Transfert National")
     print("2. Transfert international")
     print("3. annuler un transfert")
+    print('-' *30)
     print("0. precedent")
     print("9. accueil")
+    print('-' *30)
+
 
 def transfert():
     while True:
@@ -449,7 +492,10 @@ def transfert_national():
                             sauvegarde_montant(soldes)
 
                             service_orangr.append({'numero': numero, 'montant': montan})
+                            print("-" * 30)
                             print(f"Transfert de {montan} réussi avec succès! Solde restant: {soldes['montants']}")
+                            print("-" * 30)
+
                 else:
                             print("Solde insuffisant pour ce transfert!")
                     
@@ -484,7 +530,9 @@ def transfert_international():
                             sauvegarde_montant(soldes)
 
                             service_orangr.append({'numero': mon_numero, 'montant': montan})
+                            print("-" * 30)
                             print(f"Transfert international de {montan} réussi! Solde restant: {soldes['montants']}")
+                            print("-" * 30)
                     else:
                             print("Solde insuffisant pour ce transfert!")
                 choix= int(input("Accueil : "))
@@ -533,7 +581,9 @@ def annulation_transfert():
                 soldes['montants'] += montant
                 sauvegarde_montant(soldes)
                 service_orangr.pop()
+                print("-" * 30)
                 print(f"Annulation réussie. Nouveau solde : {soldes['montants']}")
+                print("-" * 30)
                 break
             elif choix == 2:
                 print("Annulation annulée.")
