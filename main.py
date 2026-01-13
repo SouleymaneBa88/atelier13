@@ -1,7 +1,16 @@
-
+import json
+import os
 #creation liste
 service_orangr=[]
-soldes = 400000
+soldes = {
+    'montants': 400000
+}
+fichier = 'data.json'
+#cette condition verifie si ce fichier n'existe pas
+if not os.path.exists(fichier):
+    with open(fichier, 'w', encoding= 'utf-8') as fichier_json:
+        json.dump(soldes,fichier_json,indent=4)
+
 
 #===========================================Menu principal=====================================================================
 
@@ -9,7 +18,9 @@ def menu():
     print("Contact")
     print("\n Pour acceder au service orange money taper  '#144#'")
     # print("#144#")
+
 #===========================================Fonction principal=====================================================================
+
 #fonction menu principal
 def menu_om():
     print("\n Bienvenu dans le service orange money ")
@@ -21,6 +32,7 @@ def menu_om():
 # affiche menu om
 def afficher_orange_money():
     while True:
+        
         menu_om()
         try:
             compose=int(input("Choix option: ")) 
@@ -46,7 +58,9 @@ def afficher_orange_money():
             break
         except ValueError:
             print("Probleme de connexion ou code non valide.")
+
 #===========================================Consulter le solde=====================================================================
+
 # menu consulter le solde
 def menu_consulter_solde():
     print("\n Consulter votre solde")
@@ -59,6 +73,7 @@ def menu_consulter_solde():
 def consulter():
     while True:
         menu_consulter_solde()
+        
         try:
             choix_menu= int(input("Choix option: "))
             if choix_menu == 1:
@@ -84,17 +99,14 @@ def consulter():
             break
         except ValueError:
             print("Probleme de connexion ou code non valide.")
-
+# consulter le solde
 def affiche_consulter_solde():
     while True:
-        global soldes
-        # menu_consulter_solde()
         try:
-            code=1234
-            code_user= int(input("otre code secret : "))
-        
-            if code_user == code:
-                print(f"Votre solde est: {soldes} Fcf")
+            confirmation()
+            with open(fichier,'r') as f:
+                soldes=json.load(f)
+                print(f" Le solde de votre compte om est de {soldes['montants']}")
 
                 choix= int(input("Choix menu du solde : "))
                 if choix==0:
@@ -106,14 +118,12 @@ def affiche_consulter_solde():
                 else:
                     print("Probleme de connexion ou code non valide.")
                     break
-            else:
-                print("code incorrect veullez resaisir")
+            
         except ValueError:
             print
 
 def condamne():
      while True:
-        # menu_consulter_solde()
         try:
                 print("Votre condamne est vide")
                 choix= int(input("retoune a consultation :  "))
@@ -235,32 +245,42 @@ def Internet():
     print("0. Precedent")
     print("9. Accueil")
     while True:
-        global soldes
         try:
             choix = int (input("Choix option : "))
             if choix == 1:
                 prix = 500
                 quantiter = 100
                 capacite = 'Mo'
-                soldes -= prix
+                confirmation()
+                with open(fichier,'r') as f:
+                    soldes=json.load(f)
+                soldes['montants']  -= prix
                 print(f"Bravo! vous avez acheter un forfait interne de {quantiter}{capacite} a {prix}")
-                print(f"Votre solde orange money est {soldes}")
+                print(f"Votre solde orange money est {soldes['montants']}")
                 break
             elif choix == 2:
                 prix = 1000
                 quantiter = 500
                 capacite = 'Mo'
-                soldes -= prix
+                confirmation()
+                with open(fichier,'r') as f:
+                    soldes=json.load(f)
+                soldes['montants'] -= prix
                 print(f"Bravo! vous avez acheter un forfait interne de {quantiter}{capacite} a {prix}")
-                print(f"Votre solde orange money est {soldes}")
+                print(f"Votre solde orange money est {soldes['montants']}")
+
                 break
             elif choix == 3:
                 prix = 2000
                 quantiter = 1
                 capacite = 'Go'
-                soldes -= prix
+                confirmation()
+                with open(fichier,'r') as f:
+                    soldes=json.load(f)
+                soldes['montants']  -= prix
                 print(f"Bravo! vous avez acheter un forfait interne de {quantiter}{capacite} a {prix}")
-                print(f"Votre solde orange money est {soldes}")
+                print(f"Votre solde orange money est {soldes['montants']}")
+
                 break
             elif choix == 0:
                 break
@@ -277,18 +297,26 @@ def Internet():
     #     global soldes
     #     soldes -= prix
     #     print(f"Bravo! vous avez acheter un forfait interne de {quantiter}{capacite} a {prix}")
+def sauvegarde_montant(soldes):
+  try:
+    with open(fichier, 'w') as f:
+      json.dump(soldes, f, indent=4)
+      print(f"compteur sauvegardé dans {fichier}")
+  except Exception as e:
+    print(f"Erreur lors de la sauvegarde: {e}")
 
 def mon_numero():
     while True:
-        global soldes
         try:
             montant= int(input("Veuillez saisir le montant : "))
             if montant > 0:
-                  
                     confirmation()
-                    if soldes >= montant:
-                            soldes = soldes - montant
-                            print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes}")
+                    with open(fichier,'r') as f:
+                        soldes=json.load(f)
+                    if soldes['montants'] >= montant:
+                            soldes['montants'] -= montant
+                            sauvegarde_montant(soldes)
+                            print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes['montants']}")
                     else:
                             print("Votre solde est insuffisant!")
             else:
@@ -308,18 +336,18 @@ def mon_numero():
 
 def mon_autre_numero():
     while True:
-        global soldes
         try:
             mon_numero= (input("Veuillez saisir votre numero : "))
             if len(str(mon_numero))== 9:
                 montant= int(input("Veuillez saisir le montant : "))
                 if montant > 0:
-                    code= int(input("Veuillez saisir votre code secret : "))
+                    # code= int(input("Veuillez saisir votre code secret : "))
                     # if code == 1234:
                     confirmation()
-                    if soldes >= montant:
-                            soldes = soldes - montant
-                            print(f"Credit de {montant} envoyé au {mon_numero}. Solde restant: {soldes}")
+                    if soldes['montants'] >= montant:
+                            soldes['montants'] -= montant
+                            sauvegarde_montant(soldes)
+                            print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes['montants']}")
                     else:
                             print("Votre solde est insuffisant!")
                     # else:
@@ -338,18 +366,18 @@ def mon_autre_numero():
 
 def mon_numero_promobile():
     while True:
-        global soldes
         try:
             mon_numero= (input("Veuillez saisir votre numero : "))
             if len(str(mon_numero))== 9:
                 montant= int(input("Veuillez saisir le montant : "))
                 if montant > 0:
-                    code= int(input("Veuillez saisir votre code secret : "))
+                    # code= int(input("Veuillez saisir votre code secret : "))
                     # if code == 1234:
                     confirmation()
-                    if soldes >= montant:
-                            soldes = soldes - montant
-                            print(f"Credit de {montant} acheté pour {mon_numero}. Solde restant: {soldes}")
+                    if soldes['montants'] >= montant:
+                            soldes['montants'] -= montant
+                            sauvegarde_montant(soldes)
+                            print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes['montants']}")
                     else:
                             print("Votre solde est insuffisant!")
                     # else:
@@ -378,6 +406,7 @@ def menu_transfert():
 def transfert():
     while True:
         menu_transfert()
+        
         try:
             choix_menu= int(input("Veullez choisir un menu pour le transfert: "))
             if choix_menu == 1:
@@ -408,16 +437,19 @@ def transfert():
 
 def transfert_national():
     while True:
-        global soldes
         try:
             numero= input("Veuillez donner votre numero : ")
             if len(numero) == 9:
                 montan= int(input("Veuillez le montant a transferer : "))
                 confirmation()
-                if soldes >= montan:
-                            soldes = soldes - montan
+                with open(fichier,'r') as f:
+                        soldes=json.load(f)
+                if soldes['montants'] >= montan:
+                            soldes['montants'] -= montan
+                            sauvegarde_montant(soldes)
+
                             service_orangr.append({'numero': numero, 'montant': montan})
-                            print(f"Transfert de {montan} réussi avec succès! Solde restant: {soldes}")
+                            print(f"Transfert de {montan} réussi avec succès! Solde restant: {soldes['montants']}")
                 else:
                             print("Solde insuffisant pour ce transfert!")
                     
@@ -437,18 +469,22 @@ def transfert_national():
 
 def transfert_international():
     while True:
-        global soldes
+        # global soldes
         try:
             mon_numero= input("Veuillez saisir votre numero : ")
             if len(mon_numero) == 9:
                 montan= int(input("Veuillez le montant a transferer : "))
                 if montan>0:
-                    code_secret= int(input("Veuillez saisir votre code secret : "))
+                    # code_secret= int(input("Veuillez saisir votre code secret : "))
                     confirmation()
-                    if soldes >= montan:
-                            soldes = soldes - montan
+                    with open(fichier,'r') as f:
+                        soldes=json.load(f)
+                    if soldes['montants'] >= montan:
+                            soldes['montants'] -=  montan
+                            sauvegarde_montant(soldes)
+
                             service_orangr.append({'numero': mon_numero, 'montant': montan})
-                            print(f"Transfert international de {montan} réussi! Solde restant: {soldes}")
+                            print(f"Transfert international de {montan} réussi! Solde restant: {soldes['montants']}")
                     else:
                             print("Solde insuffisant pour ce transfert!")
                 choix= int(input("Accueil : "))
@@ -472,6 +508,9 @@ def annulation_transfert():
         return
     last_transfer = service_orangr[-1]
     while True:
+        print(f"Historique des transferts \n")
+        for key , value in service_orangr:
+            print(f"liste des transfert \n {value} ")
         numero = input("Veuillez saisir le numéro du destinataire : ")
         try:
             montant = int(input("Veuillez saisir le montant du transfert : "))
@@ -488,10 +527,13 @@ def annulation_transfert():
         try:
             choix = int(input("Confirmer l'annulation ? "))
             if choix == 1:
-                global soldes
-                soldes += montant
+                confirmation()
+                with open(fichier,'r') as f:
+                        soldes=json.load(f)
+                soldes['montants'] += montant
+                sauvegarde_montant(soldes)
                 service_orangr.pop()
-                print(f"Annulation réussie. Nouveau solde : {soldes}")
+                print(f"Annulation réussie. Nouveau solde : {soldes['montants']}")
                 break
             elif choix == 2:
                 print("Annulation annulée.")
