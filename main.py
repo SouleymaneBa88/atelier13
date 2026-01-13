@@ -11,6 +11,14 @@ if not os.path.exists(fichier):
     with open(fichier, 'w', encoding= 'utf-8') as fichier_json:
         json.dump(soldes,fichier_json,indent=4)
 
+# Charger l'historique existant
+historique_trans = 'historique_transfert.json'
+if os.path.exists(historique_trans):
+    with open(historique_trans, 'r') as f:
+        service_orangr = json.load(f)
+else:
+    service_orangr = []
+
 
 #===========================================Menu principal=====================================================================
 
@@ -168,7 +176,9 @@ def international():
         except ValueError:
                     print("Probleme de connexion ou code non valide.")
              
+
 #===========================================acheter du credit=====================================================================
+# achat de credit
 def menu_cacheter_credit():
     print('-' *30)
     print("\n Achat credit")
@@ -210,6 +220,7 @@ def achat_credit():
         except ValueError:
             print("Probleme de connexion ou code non valide.")
 
+#sous menu de achat de credit mon numero
 def Menu_achat():
     print('-' *30)
     print("\n Mon numero")
@@ -253,7 +264,7 @@ def confirmation():
                 break
         except ValueError:
             print("Code incorrect !")
-
+#forfait internet
 def Internet():
     print('-' *30)
     print("\n Forfait internet")
@@ -317,12 +328,7 @@ def Internet():
         except ValueError:
             print("Choix incorrect !")
 
-# def forfait(prix,quantiter,capacite):
-    # while True:
-    #     Internet(prix,quantiter,capacite)
-    #     global soldes
-    #     soldes -= prix
-    #     print(f"Bravo! vous avez acheter un forfait interne de {quantiter}{capacite} a {prix}")
+# sauvegarde le soldes
 def sauvegarde_montant(soldes):
   try:
     with open(fichier, 'w') as f:
@@ -331,6 +337,7 @@ def sauvegarde_montant(soldes):
   except Exception as e:
     print(f"Erreur lors de la sauvegarde: {e}")
 
+# achat de credit telephonique
 def mon_numero():
     while True:
         try:
@@ -433,18 +440,28 @@ def mon_numero_promobile():
             print("Numero incorrect resaisi")
 
 #===========================================effectuer de transfert=====================================================================
-
+# Menu du transfert
 def menu_transfert():
     print('-' *30)
     print("\n Transfert d'argent")
     print("1. Transfert National")
     print("2. Transfert international")
     print("3. annuler un transfert")
+    print("4. Historique de Transaction")
     print('-' *30)
     print("0. precedent")
     print("9. accueil")
     print('-' *30)
 
+#sauvegarder le historique des transaction
+def sauvegarde_historique():
+    try:
+        historique_trans = 'historique_transfert.json'
+        with open(historique_trans, 'w') as f:
+            json.dump(service_orangr, f, indent=4)
+            print("Historique sauvegardé dans historique_transfert.json")
+    except Exception as e:
+        print(f"Erreur lors de la sauvegarde de l'historique: {e}")
 
 def transfert():
     while True:
@@ -463,6 +480,9 @@ def transfert():
             elif choix_menu==3:
                 annulation_transfert()
                 break
+            elif choix_menu==4:
+                afficher_historique()
+                break
 
             elif choix_menu==0:
                 afficher_orange_money()
@@ -478,6 +498,7 @@ def transfert():
         except ValueError:
             print("Probleme de connexion ou code non valide.")
 
+#transfert national
 def transfert_national():
     while True:
         try:
@@ -492,6 +513,7 @@ def transfert_national():
                             sauvegarde_montant(soldes)
 
                             service_orangr.append({'numero': numero, 'montant': montan})
+                            sauvegarde_historique()
                             print("-" * 30)
                             print(f"Transfert de {montan} réussi avec succès! Solde restant: {soldes['montants']}")
                             print("-" * 30)
@@ -513,6 +535,7 @@ def transfert_national():
         except ValueError:
             print("Erreur de connexion veuillez retentez")
 
+# transfert international
 def transfert_international():
     while True:
         # global soldes
@@ -530,6 +553,8 @@ def transfert_international():
                             sauvegarde_montant(soldes)
 
                             service_orangr.append({'numero': mon_numero, 'montant': montan})
+                            sauvegarde_historique()
+
                             print("-" * 30)
                             print(f"Transfert international de {montan} réussi! Solde restant: {soldes['montants']}")
                             print("-" * 30)
@@ -549,16 +574,16 @@ def transfert_international():
         except ValueError:
             print("Erreur de connexion veuillez retentez")
 
+#annulation du transfert
 def annulation_transfert():
     print("\n Annulation du transfert")
     if not service_orangr:
         print("Aucun transfert à annuler.")
         return
+    
     last_transfer = service_orangr[-1]
     while True:
-        print(f"Historique des transferts \n")
-        for key , value in service_orangr:
-            print(f"liste des transfert \n {value} ")
+        afficher_historique()
         numero = input("Veuillez saisir le numéro du destinataire : ")
         try:
             montant = int(input("Veuillez saisir le montant du transfert : "))
@@ -569,6 +594,7 @@ def annulation_transfert():
             break
         else:
             print("Erreur de choix. Veuillez ressayer.")
+
     print("1. Oui")
     print("2. Non")
     while True:
@@ -581,6 +607,7 @@ def annulation_transfert():
                 soldes['montants'] += montant
                 sauvegarde_montant(soldes)
                 service_orangr.pop()
+                sauvegarde_historique()
                 print("-" * 30)
                 print(f"Annulation réussie. Nouveau solde : {soldes['montants']}")
                 print("-" * 30)
@@ -592,7 +619,21 @@ def annulation_transfert():
                 print("Choix incorrect.")
         except ValueError:
             print("Choix incorrect.")
-        
+
+#Afficher l'historique de la transaction
+def afficher_historique():
+    print("\n Historique de transaction")
+    historique_trans = 'historique_transfert.json'
+    try:
+        with open(historique_trans, 'r') as historique:
+            list_trans = json.load(historique)
+            if list_trans:
+                for trans in list_trans:
+                    print(f"- {trans}")  # Ajustez selon la structure de vos données
+            else:
+                print("Aucune transaction trouvée.")
+    except json.JSONDecodeError:
+        print("Erreur lors de la lecture du fichier historique.")
 #===========================================Programme principal=====================================================================
 
 #principal programme
