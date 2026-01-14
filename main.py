@@ -1,5 +1,6 @@
 import json
 import os
+import re
 #creation liste
 service_orangr=[]
 soldes = {
@@ -24,7 +25,7 @@ else:
 
 def menu():
     print("  ")
-    print("--Yonde sa xaliss si soutoura--")
+    print("--Yonde sa xaliss si soutoura tedo si faye dra--")
     print("\n Pour acceder au service orange money taper  '#144#'")
     # print("#144#")
 
@@ -75,13 +76,10 @@ def menu_consulter_solde():
     print('-' *30)
     print("\n Consulter votre solde")
     print("1. Solde compte om")
-    print("2. Mon condamne")
-    print("3. Reception international")
     print('-' *30)
     print("0. precedent")
     print("9. accueil")
     print('-' *30)
-
 
 def consulter():
     while True:
@@ -93,26 +91,19 @@ def consulter():
                 affiche_consulter_solde()
                 break
 
-            elif choix_menu == 2:
-                condamne()
-                break
-
-            elif choix_menu==3:
-                international()
-                break
-
             elif choix_menu==0:
                 afficher_orange_money()
                 break
            
-
             else:
              print("Probleme de connexion ou code non valide.")
 
             break
         except ValueError:
             print("Probleme de connexion ou code non valide.")
+
 # consulter le solde
+
 def affiche_consulter_solde():
     while True:
         code = 1234
@@ -141,42 +132,6 @@ def affiche_consulter_solde():
         except ValueError:
             print
 
-def condamne():
-     while True:
-        try:
-                print("Votre condamne est vide")
-                choix= int(input("retoune a consultation :  "))
-                if choix==0:
-                    consulter()
-                    break
-                elif choix==9:
-                    afficher_orange_money()
-                    break
-                else:
-                    print("Probleme de connexion ou code non valide.")
-                    break
-        except ValueError:
-            print
-
-def international():
-     while True:
-        # menu_consulter_solde()
-        try:
-                print("Votre Reception international est vide")
-                choix= int(input("retoune a consultation: "))
-                if choix==0:
-                    consulter()
-                    break
-                elif choix==9:
-                    afficher_orange_money()
-                    break
-                else:
-                    print("Probleme de connexion ou code non valide.")
-                    break
-        except ValueError:
-                    print("Probleme de connexion ou code non valide.")
-             
-
 #===========================================acheter du credit=====================================================================
 # achat de credit
 def menu_cacheter_credit():
@@ -184,7 +139,6 @@ def menu_cacheter_credit():
     print("\n Achat credit")
     print("1. Mon numero")
     print("2. Avec un autre numero")
-    print("3. Avec un numero promobile")
     print('-' *30)
     print("0. precedent")
     print("9. accueil")
@@ -201,11 +155,6 @@ def achat_credit():
             elif choix_menu == 2:
                 mon_autre_numero()
                 break
-
-            elif choix_menu==3:
-                mon_numero_promobile()
-                break
-
             elif choix_menu==0:
                 afficher_orange_money()
                 break
@@ -225,8 +174,7 @@ def Menu_achat():
     print('-' *30)
     print("\n Mon numero")
     print("1. credit Telephonique")
-    print("2. Pass Ilimix")
-    print("3. Pass Internet")
+    print("2. Forfait internet")
     print('-' *30)
     print("0. Precedent")
     print("9. Accueil")
@@ -264,6 +212,7 @@ def confirmation():
                 break
         except ValueError:
             print("Code incorrect !")
+
 #forfait internet
 def Internet():
     print('-' *30)
@@ -333,7 +282,7 @@ def sauvegarde_montant(soldes):
   try:
     with open(fichier, 'w') as f:
       json.dump(soldes, f, indent=4)
-      print(f"compteur sauvegardé dans {fichier}")
+    #   print(f"compteur sauvegardé dans {fichier}")
   except Exception as e:
     print(f"Erreur lors de la sauvegarde: {e}")
 
@@ -351,7 +300,7 @@ def mon_numero():
                             sauvegarde_montant(soldes)
                             print('-' *30)
 
-                            print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes['montants']}")
+                            print(f"Credit de {montant}fcf acheté avec succès! \n Votre solde restant: {soldes['montants']}fcf")
                             print('-' *30)
 
                     else:
@@ -374,70 +323,40 @@ def mon_numero():
 def mon_autre_numero():
     while True:
         try:
-            mon_numero= (input("Veuillez saisir votre numero : "))
-            if len(str(mon_numero))== 9:
+            paterne =r'78|77|75\d{7}'
+            mon_numero=str( input("Veuillez saisir votre numero : "))
+            if re.match(paterne,mon_numero):
                 montant= int(input("Veuillez saisir le montant : "))
                 if montant > 0:
-                    # code= int(input("Veuillez saisir votre code secret : "))
-                    # if code == 1234:
                     confirmation()
                     if soldes['montants'] >= montant:
-                            soldes['montants'] -= montant
-                            sauvegarde_montant(soldes)
-                            print('-' *30)
-
-                            print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes['montants']}")
-                            print('-' *30)
+                        soldes['montants'] -= montant
+                        sauvegarde_montant(soldes)
+                        print('-' *30)
+                        print(f"Vous avez achete {montant}fcf au {mon_numero}\n Votre solde {soldes['montants']}fcf \n Merci.OFMS.")
+                        print('-' * 30)
+                        print('-' *30)
 
                     else:
-                            print("Votre solde est insuffisant!")
+                        print("Votre solde est insuffisant!")
+                else:
+                    print("Erreur ! Veuillez bien saisir le montant")
                     # else:
                     #     print("Code incorrect veuillez ressayer")
                 choix= int(input("Retoune a consultation: "))
                 if choix == 0:
-                    achat_credit()
-                    break
+                        achat_credit()
+                        break
                 elif choix==9:
-                    afficher_orange_money()
-                    break
-            else:
-                print("Incorrect veuillez resaisir")
-        except ValueError:
-            print("Numero incorrect resaisi")
-
-def mon_numero_promobile():
-    while True:
-        try:
-            mon_numero= (input("Veuillez saisir votre numero : "))
-            if len(str(mon_numero))== 9:
-                montant= int(input("Veuillez saisir le montant : "))
-                if montant > 0:
-                    # code= int(input("Veuillez saisir votre code secret : "))
-                    # if code == 1234:
-                    confirmation()
-                    if soldes['montants'] >= montant:
-                            soldes['montants'] -= montant
-                            sauvegarde_montant(soldes)
-                            print('-' *30)
-
-                            print(f"Credit de {montant} acheté avec succès! Solde restant: {soldes['montants']}")
-                            print('-' *30)
-
-                    else:
-                            print("Votre solde est insuffisant!")
-                    # else:
-                    #     print("Code incorrect veuillez ressayer")
+                        afficher_orange_money()
+                        break
                 else:
-                    print("Montant invalide")
-
-                choix= int(input("Retoune a consultation: "))
-                if choix==0:
-                    achat_credit()
-                    break
+                    print("Incorrect veuillez resaisir")
             else:
-                print("Incorrect veuillez resaisir")
+                print("numero incorrect !")
         except ValueError:
             print("Numero incorrect resaisi")
+
 
 #===========================================effectuer de transfert=====================================================================
 # Menu du transfert
@@ -459,7 +378,7 @@ def sauvegarde_historique():
         historique_trans = 'historique_transfert.json'
         with open(historique_trans, 'w') as f:
             json.dump(service_orangr, f, indent=4)
-            print("Historique sauvegardé dans historique_transfert.json")
+            # print("Historique sauvegardé dans historique_transfert.json")
     except Exception as e:
         print(f"Erreur lors de la sauvegarde de l'historique: {e}")
 
@@ -473,9 +392,9 @@ def transfert():
                 transfert_national()
                 break
 
-            elif choix_menu == 2:
-                transfert_international()
-                break
+            # elif choix_menu == 2:
+            #     transfert_international()
+            #     break
 
             elif choix_menu==3:
                 annulation_transfert()
@@ -511,11 +430,10 @@ def transfert_national():
                 if soldes['montants'] >= montan:
                             soldes['montants'] -= montan
                             sauvegarde_montant(soldes)
-
                             service_orangr.append({'numero': numero, 'montant': montan})
                             sauvegarde_historique()
                             print("-" * 30)
-                            print(f"Transfert de {montan} réussi avec succès! Solde restant: {soldes['montants']}")
+                            print(f"Votre operation de {montan}.00FCFA a ete reglee par Orange \n Money. Frais:0.00 :\n Votre solde {soldes['montants',]}.00FCFA \n Merci.OFMS. ")
                             print("-" * 30)
 
                 else:
@@ -534,46 +452,7 @@ def transfert_national():
                 print("Incorrect veuillez resaisir")
         except ValueError:
             print("Erreur de connexion veuillez retentez")
-
-# transfert international
-def transfert_international():
-    while True:
-        # global soldes
-        try:
-            mon_numero= input("Veuillez saisir votre numero : ")
-            if len(mon_numero) == 9:
-                montan= int(input("Veuillez le montant a transferer : "))
-                if montan>0:
-                    # code_secret= int(input("Veuillez saisir votre code secret : "))
-                    confirmation()
-                    with open(fichier,'r') as f:
-                        soldes=json.load(f)
-                    if soldes['montants'] >= montan:
-                            soldes['montants'] -=  montan
-                            sauvegarde_montant(soldes)
-
-                            service_orangr.append({'numero': mon_numero, 'montant': montan})
-                            sauvegarde_historique()
-
-                            print("-" * 30)
-                            print(f"Transfert international de {montan} réussi! Solde restant: {soldes['montants']}")
-                            print("-" * 30)
-                    else:
-                            print("Solde insuffisant pour ce transfert!")
-                choix= int(input("Accueil : "))
-                if choix ==0:
-                    transfert()
-                    break
-                elif choix==9:
-                    afficher_orange_money()
-                    break
-                else:
-                    print("Choix incorrect!")
-            else:
-                print("Incorrect veuillez resaisir")
-        except ValueError:
-            print("Erreur de connexion veuillez retentez")
-
+#
 #annulation du transfert
 def annulation_transfert():
     print("\n Annulation du transfert")
@@ -584,9 +463,9 @@ def annulation_transfert():
     last_transfer = service_orangr[-1]
     while True:
         afficher_historique()
-        numero = input("Veuillez saisir le numéro du destinataire : ")
+        numero = input("Donnez le numéro du destinataire a annule : ")
         try:
-            montant = int(input("Veuillez saisir le montant du transfert : "))
+            montant = int(input("Veuillez saisir le montant du transfert a annulee : "))
         except ValueError:
             print("Montant invalide. Veuillez ressayer.")
             continue
@@ -607,13 +486,13 @@ def annulation_transfert():
                 soldes['montants'] += montant
                 sauvegarde_montant(soldes)
                 service_orangr.pop()
-                sauvegarde_historique()
+                # sauvegarde_historique()
                 print("-" * 30)
-                print(f"Annulation réussie. Nouveau solde : {soldes['montants']}")
+                print(f"Votre transaction  de {montant}.00FCFA par erreur a ete annuler.\n Le montant a ete credite sur votre compte Orange Money {soldes['montants']}\n Merci OFMS")
                 print("-" * 30)
                 break
             elif choix == 2:
-                print("Annulation annulée.")
+                print("Operation annulée avec sucess !.")
                 break
             else:
                 print("Choix incorrect.")
@@ -633,7 +512,6 @@ def afficher_historique():
                     print(f"--- Transaction {index} ---")
                     for key,value in trans.items():
                         print(f"\n {key} : {value}")  
-                        # print("-" * (len(f"--- Élément à l'index {index} ---")))
             else:
                 print("Aucune transaction trouvée.")
     except json.JSONDecodeError:
