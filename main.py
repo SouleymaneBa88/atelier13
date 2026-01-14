@@ -11,13 +11,12 @@ fichier = 'compte.json'
 if not os.path.exists(fichier):
     with open(fichier, 'w', encoding= 'utf-8') as fichier_json:
         json.dump(soldes,fichier_json,indent=4)
-
-# Charger l'historique existant
+#crer le fichier json pour l'historique 
 historique_trans = 'historique_transfert.json'
 if not os.path.exists(historique_trans):
     with open(historique_trans, 'w') as f:
         json.dump(service_orangr,f, indent=4)
-
+# Charger l'historique existant
 if os.path.exists(historique_trans):
     with open(historique_trans, 'r') as f:
         service_orangr = json.load(f)
