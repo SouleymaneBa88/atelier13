@@ -482,7 +482,7 @@ def annulation_transfert():
                 soldes['montants'] += montant
                 sauvegarde_montant(soldes)
                 service_orangr.pop()
-                # sauvegarde_historique()
+                sauvegarde_historique()
                 print("-" * 30)
                 print(f"Votre transaction  de {montant}.00FCFA par erreur a ete annuler.\n Le montant a ete credite sur votre compte Orange Money {soldes['montants']}\n Merci OFMS")
                 print("-" * 30)
