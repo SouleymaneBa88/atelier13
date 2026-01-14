@@ -451,8 +451,9 @@ def transfert_national():
 #
 #annulation du transfert
 def annulation_transfert():
+    global service_orangr
     print("\n Annulation du transfert")
-    if not service_orangr:
+    if len(service_orangr)== 0:
         print("Aucun transfert à annuler.")
         return
     
@@ -482,7 +483,12 @@ def annulation_transfert():
                 soldes['montants'] += montant
                 sauvegarde_montant(soldes)
                 service_orangr.pop()
+                with open(historique_trans, 'r') as f:
+                    service_orangr = json.load(f)
                 # sauvegarde_historique()
+                service_orangr[-1]['montant'] = -montant
+                with open(historique_trans, 'w') as f:
+                     json.dump(service_orangr,f, indent=4)
                 print("-" * 30)
                 print(f"Votre transaction  de {montant}.00FCFA par erreur a ete annuler.\n Le montant a ete credite sur votre compte Orange Money {soldes['montants']}\n Merci OFMS")
                 print("-" * 30)
