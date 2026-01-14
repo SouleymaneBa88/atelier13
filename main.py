@@ -14,12 +14,15 @@ if not os.path.exists(fichier):
 
 # Charger l'historique existant
 historique_trans = 'historique_transfert.json'
+if not os.path.exists(historique_trans):
+    with open(historique_trans, 'w') as f:
+        json.dump(service_orangr,f, indent=4)
+
 if os.path.exists(historique_trans):
     with open(historique_trans, 'r') as f:
         service_orangr = json.load(f)
 else:
     service_orangr = []
-
 
 #===========================================Menu principal=====================================================================
 
@@ -186,10 +189,8 @@ def Menu_achat():
             if choix == 1:
                 mon_numero()
                 break
-            elif choix== 2:
-                print("erreur indisponible pour une maintenance")
-                break
-            elif choix == 3:
+            
+            elif choix == 2:
                 Internet()
                 break
             elif choix == 0:
@@ -392,10 +393,6 @@ def transfert():
                 transfert_national()
                 break
 
-            # elif choix_menu == 2:
-            #     transfert_international()
-            #     break
-
             elif choix_menu==3:
                 annulation_transfert()
                 break
@@ -433,7 +430,7 @@ def transfert_national():
                             service_orangr.append({'numero': numero, 'montant': montan})
                             sauvegarde_historique()
                             print("-" * 30)
-                            print(f"Votre operation de {montan}.00FCFA a ete reglee par Orange \n Money. Frais:0.00 :\n Votre solde {soldes['montants',]}.00FCFA \n Merci.OFMS. ")
+                            print(f"Votre operation de {montan}.00FCFA a ete reglee par Orange \n Money. Frais:0.00 :\n Votre solde {soldes['montants']}.00FCFA \n Merci.OFMS. ")
                             print("-" * 30)
 
                 else:
