@@ -623,17 +623,22 @@ def annulation_transfert():
 #Afficher l'historique de la transaction
 def afficher_historique():
     print("\n Historique de transaction")
+    print("\n")
     historique_trans = 'historique_transfert.json'
     try:
         with open(historique_trans, 'r') as historique:
             list_trans = json.load(historique)
             if list_trans:
-                for trans in list_trans:
-                    print(f"- {trans}")  # Ajustez selon la structure de vos données
+                for index ,trans in enumerate(list_trans,1) :
+                    print(f"--- Transaction {index} ---")
+                    for key,value in trans.items():
+                        print(f"\n {key} : {value}")  
+                        # print("-" * (len(f"--- Élément à l'index {index} ---")))
             else:
                 print("Aucune transaction trouvée.")
     except json.JSONDecodeError:
         print("Erreur lors de la lecture du fichier historique.")
+        
 #===========================================Programme principal=====================================================================
 
 #principal programme
